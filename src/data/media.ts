@@ -23,6 +23,10 @@ export type Media = {
 };
 
 export const media: Media[] = [
-  // { kind: "instagram", url: "https://www.instagram.com/reel/XXXX/", poster: "/videos/reel-1.jpg", title: { en: "Morning at the plant", gu: "પ્લાન્ટમાં સવાર" } },
-  // { kind: "youtube", url: "https://youtube.com/shorts/XXXX", title: { en: "How we make ghee", gu: "અમે ઘી કેવી રીતે બનાવીએ" } },
+  { kind: "youtube", url: "https://youtube.com/shorts/QiktGh-eJ4U", title: { en: "20+ years of dairy delights", gu: "20+ વર્ષથી ડેરીની મીઠાશ" } },
+  { kind: "youtube", url: "https://youtube.com/shorts/kIU4IzBFa-w", title: { en: "Clean kitchens, honest quality", gu: "સફાઈ પણ, ક્વોલિટી પણ" } },
+  { kind: "youtube", url: "https://youtube.com/shorts/Pi1fEn8ZNFs", title: { en: "Namkeen fried in pure groundnut oil", gu: "શુદ્ધ સિંગતેલમાં બનેલું નમકીન" } },
+  { kind: "youtube", url: "https://youtube.com/shorts/TzblTcCvbX8", title: { en: "Garba needs mithai too", gu: "ગરબા સાથે મીઠાઈની મીઠાશ" } },
+  { kind: "youtube", url: "https://youtube.com/shorts/s76HRqM25Ek", title: { en: "The Rakhi gift that always wins", gu: "રાખડી પર જીતે એવી ગિફ્ટ" } },
+  { kind: "instagram", url: "https://www.instagram.com/reel/DfduhCmIuGz/", title: { en: "Fresh on our Instagram", gu: "અમારા Instagram પર તાજું" } },
 ];

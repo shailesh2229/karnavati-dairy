@@ -29,7 +29,8 @@ export default function Colophon() {
             <li><a className="hover:underline" href={site.phoneHref}>{site.phone}</a></li>
             <li><a className="hover:underline" href={site.customerCareHref}>{site.customerCare}</a> <span className="font-sans text-milk/60"><T en="care" gu="સેવા" /></span></li>
             <li><a className="hover:underline" href={`mailto:${site.email}`}>{site.email}</a></li>
-            <li><a className="hover:underline" href={site.instagram} target="_blank" rel="noopener noreferrer">@karnavatidairyofficial</a></li>
+            <li><a className="hover:underline" href={site.instagram} target="_blank" rel="noopener noreferrer">{site.instagramHandle}</a></li>
+            <li><a className="hover:underline" href={site.youtube} target="_blank" rel="noopener noreferrer">YouTube @Karnavati_dairy</a></li>
           </ul>
           <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-sm text-milk/80">
             <li><Link href="/products" className="hover:text-milk"><T en="Counter" gu="દુકાન" /></Link></li>

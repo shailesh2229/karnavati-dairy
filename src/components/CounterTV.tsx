@@ -10,12 +10,6 @@ import T from "@/components/T";
 
 const fallbackPosters = ["/images/ghee2.png", "/images/main_sweets.png", "/images/main_lassi.png", "/images/main_icecream.png", "/images/main_paneer1.png", "/images/main_milkg.png"];
 
-function instagramEmbed(url: string) {
-  const m = url.match(/instagram\.com\/(reel|reels|p|tv)\/([\w-]+)/);
-  if (!m) return null;
-  const type = m[1] === "reels" ? "reel" : m[1];
-  return `https://www.instagram.com/${type}/${m[2]}/embed/`;
-}
 function youtubeId(url: string) {
   return url.match(/(?:youtu\.be\/|v=|\/shorts\/|\/embed\/|\/live\/)([\w-]{11})/)?.[1] ?? null;
 }
@@ -38,14 +32,24 @@ export default function CounterTV() {
             <T en="See it being made." gu="બનતું જુઓ." />
           </h2>
         </div>
-        <a
-          href={site.instagram}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 rounded-full border-2 border-ink bg-milk px-4 py-2 font-semibold transition hover:bg-[#fde7ef]"
-        >
-          <InstaIcon /> @karnavatidairyofficial
-        </a>
+        <div className="flex flex-wrap gap-2">
+          <a
+            href={site.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 rounded-full border-2 border-ink bg-milk px-4 py-2 font-semibold transition hover:bg-[#fde7ef]"
+          >
+            <InstaIcon /> {site.instagramHandle}
+          </a>
+          <a
+            href={site.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 rounded-full border-2 border-ink bg-milk px-4 py-2 font-semibold transition hover:bg-[#ffe3e0]"
+          >
+            <YouTubeIcon /> YouTube
+          </a>
+        </div>
       </div>
 
       {/* the film strip */}
@@ -74,14 +78,14 @@ function Frame({ m, i }: { m: Media; i: number }) {
   const [on, setOn] = useState(false);
   const vertical = m.vertical ?? true;
   const yt = m.kind === "youtube" && m.url ? youtubeId(m.url) : null;
-  const ig = m.kind === "instagram" && m.url ? instagramEmbed(m.url) : null;
   const poster = m.poster ?? (yt ? `https://i.ytimg.com/vi/${yt}/hqdefault.jpg` : fallbackPosters[i % fallbackPosters.length]);
   const size = vertical ? "w-[62vw] max-w-[17rem] aspect-[9/16]" : "w-[84vw] max-w-[30rem] aspect-video";
   const title = tr(m.title.en, m.title.gu);
 
   if (m.kind === "video" && m.src) return <OwnClip m={m} size={size} poster={m.poster} title={title} />;
 
-  const src = yt ? `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&playsinline=1&rel=0` : ig;
+  // Instagram's embed is a cramped white widget that won't play inline, so reels open in Instagram itself
+  const src = yt ? `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&playsinline=1&rel=0` : null;
   const external = m.url ?? site.instagram;
 
   return (
@@ -107,13 +111,17 @@ function Frame({ m, i }: { m: Media; i: number }) {
             </span>
           )}
           <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-          <span className="absolute left-1/2 top-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-chopda text-2xl text-milk shadow-[0_4px_0_var(--color-chopda-dark)] transition group-hover:scale-110">
+          <span
+            className={`absolute left-1/2 top-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full text-2xl text-milk transition group-hover:scale-110 ${
+              m.kind === "instagram" ? "bg-[linear-gradient(45deg,#f9a825,#e1306c,#833ab4)] shadow-[0_4px_0_#5b1f78]" : "bg-chopda shadow-[0_4px_0_var(--color-chopda-dark)]"
+            }`}
+          >
             ▶
           </span>
           <span className="absolute inset-x-3 bottom-3 text-left">
             <span className="block font-display text-lg leading-tight text-white">{title}</span>
             <span className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-white/80">
-              {m.kind === "youtube" ? "YouTube" : "Instagram"}
+              {m.kind === "youtube" ? "YouTube" : <T en="Watch on Instagram ↗" gu="Instagram પર જુઓ ↗" />}
             </span>
           </span>
         </button>
@@ -182,6 +190,15 @@ function ComingSoon({ poster, i }: { poster: string; i: number }) {
         </span>
       </a>
     </li>
+  );
+}
+
+function YouTubeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
+      <rect x="2" y="5" width="20" height="14" rx="4" fill="#e1251b" />
+      <path d="M10 9v6l5-3z" fill="#fff" />
+    </svg>
   );
 }
 

@@ -9,7 +9,9 @@ export const site = {
   customerCare: "1-800-572-8977",
   customerCareHref: "tel:18005728977",
   email: "karnavatidairy@gmail.com",
-  instagram: "https://www.instagram.com/karnavatidairyofficial",
+  instagram: "https://www.instagram.com/karnavatidairy.official/",
+  instagramHandle: "@karnavatidairy.official",
+  youtube: "https://www.youtube.com/@Karnavati_dairy",
   address: [
     "496 D/10, Sankheshwar Industrial Estate, Tajpur Road",
     "Sarkhej Bawla Highway, Changodar",
