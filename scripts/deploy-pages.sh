@@ -14,7 +14,7 @@ cd out
 git init -q
 git checkout -q -b gh-pages
 git add -A
-git -c user.name="$(git -C .. config user.name)" -c user.email="$(git -C .. config user.email)" commit -qm "Deploy $(git -C .. rev-parse --short HEAD)"
+git -c user.name="$(git -C .. log -1 --format=%an)" -c user.email="$(git -C .. log -1 --format=%ae)" commit -qm "Deploy $(git -C .. rev-parse --short HEAD)"
 git push -f -q "$REPO_URL" gh-pages
 cd ..
 rm -rf out/.git
