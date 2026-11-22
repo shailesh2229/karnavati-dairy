@@ -6,6 +6,7 @@ import Colophon from "@/components/Colophon";
 import { TimeKeeper } from "@/components/Clock";
 import { FestivalBanner } from "@/components/Festival";
 import { bootScript } from "@/lib/daypart";
+import { withBase } from "@/lib/basePath";
 import "./globals.css";
 
 const fraunces = Fraunces({ variable: "--font-fraunces", subsets: ["latin"], axes: ["SOFT", "WONK", "opsz"] });
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   },
   description:
     "Pure milk, ghee, paneer, dahi, lassi, ice cream, sweets and farsan from Karnavati Dairy, Ahmedabad. Order on WhatsApp with free delivery above ₹3,000, or find your nearest shop.",
-  icons: { icon: "/icons/icon-192.png", apple: "/icons/apple-touch-icon.png" },
+  icons: { icon: withBase("/icons/icon-192.png"), apple: withBase("/icons/apple-touch-icon.png") },
   // iPhone "Add to Home Screen" opens full-screen like an app
   appleWebApp: { capable: true, title: "Karnavati", statusBarStyle: "black-translucent" },
 };
