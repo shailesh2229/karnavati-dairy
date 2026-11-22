@@ -23,10 +23,22 @@ export type Media = {
 };
 
 export const media: Media[] = [
+  { kind: "instagram", url: "https://www.instagram.com/reel/DfduhCmIuGz/", title: { en: "Fresh on our Instagram", gu: "અમારા Instagram પર તાજું" } },
   { kind: "youtube", url: "https://youtube.com/shorts/QiktGh-eJ4U", title: { en: "20+ years of dairy delights", gu: "20+ વર્ષથી ડેરીની મીઠાશ" } },
   { kind: "youtube", url: "https://youtube.com/shorts/kIU4IzBFa-w", title: { en: "Clean kitchens, honest quality", gu: "સફાઈ પણ, ક્વોલિટી પણ" } },
   { kind: "youtube", url: "https://youtube.com/shorts/Pi1fEn8ZNFs", title: { en: "Namkeen fried in pure groundnut oil", gu: "શુદ્ધ સિંગતેલમાં બનેલું નમકીન" } },
   { kind: "youtube", url: "https://youtube.com/shorts/TzblTcCvbX8", title: { en: "Garba needs mithai too", gu: "ગરબા સાથે મીઠાઈની મીઠાશ" } },
   { kind: "youtube", url: "https://youtube.com/shorts/s76HRqM25Ek", title: { en: "The Rakhi gift that always wins", gu: "રાખડી પર જીતે એવી ગિફ્ટ" } },
-  { kind: "instagram", url: "https://www.instagram.com/reel/DfduhCmIuGz/", title: { en: "Fresh on our Instagram", gu: "અમારા Instagram પર તાજું" } },
 ];
+
+/**
+ * Instagram story highlights, shown as round stamps above the film strip.
+ * Instagram doesn't let websites read highlights, so add each one by hand:
+ * open the highlight in Instagram → ⋯ → Copy link, and use a cover image in /public/images.
+ * The row stays hidden while this list is empty.
+ *
+ *   { name: { en: "Sweets", gu: "મીઠાઈ" }, url: "https://www.instagram.com/stories/highlights/1234567890/", cover: "/images/main_sweets.png" },
+ */
+export type Highlight = { name: { en: string; gu: string }; url: string; cover: string };
+
+export const highlights: Highlight[] = [];

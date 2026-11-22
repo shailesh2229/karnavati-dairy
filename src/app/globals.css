@@ -343,3 +343,32 @@ html[data-time="dawn"] body::after {
   background-position: 0 4px, 0 calc(100% - 4px);
   background-repeat: repeat-x;
 }
+
+/* ───────── The old ledger, flipped by scrolling ─────────
+   --p: scroll progress 0..1 (set by LedgerPages), --n: pages-1, --i: page index */
+.ledger-stage {
+  --n: 4;
+  background-color: color-mix(in srgb, #d8b97c calc((1 - var(--p)) * 55%), var(--color-paper));
+}
+.book {
+  perspective: 2200px;
+}
+.leaf {
+  /* how far this page has turned (0 = flat, 1 = turned over) */
+  --t: clamp(0, calc(var(--p) * var(--n) - var(--i)), 1);
+  /* pages still underneath sit a little lower and to the right, like a stack */
+  --depth: max(0, calc(var(--i) - var(--p) * var(--n)));
+  transform-origin: left center;
+  transform:
+    translate(calc(min(var(--depth), 3) * 7px), calc(min(var(--depth), 3) * 7px))
+    rotateY(calc(var(--t) * -168deg));
+  backface-visibility: hidden;
+  filter: brightness(calc(1 - var(--t) * 0.4));
+  opacity: calc(1 - max(0, var(--t) - 0.8) * 5);
+  will-change: transform;
+  box-shadow:
+    0 1px 0 #e5cf9e,
+    0 2px 0 #f1dfb6,
+    0 3px 0 #e2c992,
+    calc(var(--t) * 30px) 18px 30px -14px rgb(60 40 10 / 0.5);
+}

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { media, type Media } from "@/data/media";
+import { highlights, media, type Media } from "@/data/media";
 import { site } from "@/data/site";
 import { useTr } from "@/lib/lang";
 import { play } from "@/lib/sound";
@@ -51,6 +51,8 @@ export default function CounterTV() {
           </a>
         </div>
       </div>
+
+      {highlights.length > 0 && <Highlights />}
 
       {/* the film strip */}
       <div className="filmstrip relative mt-8 py-6">
@@ -190,6 +192,32 @@ function ComingSoon({ poster, i }: { poster: string; i: number }) {
         </span>
       </a>
     </li>
+  );
+}
+
+/** Instagram story highlights as round stamps; each opens in Instagram. */
+function Highlights() {
+  const tr = useTr();
+  return (
+    <ul className="no-scrollbar mt-8 flex gap-4 overflow-x-auto px-4 pb-2 sm:gap-6 sm:px-6 md:px-[max(1.5rem,calc((100%-72rem)/2+1.5rem))]" aria-label={tr("Instagram highlights", "Instagram હાઇલાઇટ્સ")}>
+      {highlights.map((h, i) => (
+        <li key={h.url} className="shrink-0">
+          <a href={h.url} target="_blank" rel="noopener noreferrer" onClick={() => play("tick")} className="group flex w-20 flex-col items-center gap-2 sm:w-24">
+            <span
+              className="grid size-20 place-items-center rounded-full p-[3px] transition-transform group-hover:-rotate-6 group-active:scale-95 sm:size-24"
+              style={{ background: "conic-gradient(from 200deg, #e3a21a, #e1306c, #9e1b17, #e3a21a)", rotate: `${(i % 3) - 1}deg` }}
+            >
+              <span className="grid size-full place-items-center overflow-hidden rounded-full border-[3px] border-paper bg-milk">
+                <Image src={h.cover} alt="" width={96} height={96} sizes="96px" className="size-full object-cover" />
+              </span>
+            </span>
+            <span className="w-full truncate text-center text-sm font-semibold">
+              <T en={h.name.en} gu={h.name.gu} />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
   );
 }
 
