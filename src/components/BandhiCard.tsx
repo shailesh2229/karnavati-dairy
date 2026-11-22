@@ -6,6 +6,7 @@ import { storeById } from "@/data/stores";
 import { bandhi, freqLabel, sameLines, useBandhi } from "@/lib/bandhi";
 import { cart, inr, summarise, useLines } from "@/lib/cart";
 import T from "@/components/T";
+import { play } from "@/lib/sound";
 
 /**
  * The saved regular order, pinned like a slip tucked into the book.
@@ -24,6 +25,7 @@ export default function BandhiCard({ className = "" }: { className?: string }) {
   const cartHasOther = Object.keys(lines).length > 0 && !inCart;
 
   const repeat = (mode: "replace" | "add") => {
+    play("page");
     if (mode === "replace") cart.clear();
     Object.entries(b.lines).forEach(([id, q]) => cart.add(id, q));
     router.push(`/hisaab${s.free && store ? "?bandhi=1" : ""}`, { transitionTypes: ["turn-fwd"] });
@@ -35,7 +37,7 @@ export default function BandhiCard({ className = "" }: { className?: string }) {
         <span className="absolute -right-8 top-4 rotate-12 bg-haldi px-10 py-1 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-ink" aria-hidden>
           <T en="Bandhi" gu="બાંધી" />
         </span>
-        <p className="font-mono text-xs uppercase tracking-[0.18em] text-chopda">
+        <p className="pr-20 font-mono text-xs uppercase tracking-[0.18em] text-chopda">
           <T en="Your regular order" gu="તમારો નિયમિત ઓર્ડર" /> · <T en={freqLabel[b.freq].en} gu={freqLabel[b.freq].gu} />
         </p>
         <p className="mt-2 max-w-2xl font-display text-xl leading-snug sm:text-2xl">

@@ -1,14 +1,59 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { play } from "@/lib/sound";
+import T from "@/components/T";
+
+type Tilt = { x: number; y: number }; // -1..1, which way the phone leans
 
 /**
- * A pool of milk you can touch. A small height-field ripple simulation on a canvas:
- * pointer / finger movement disturbs the surface, and a drop falls now and then.
- * Rendered at low resolution and upscaled, so it stays cheap on phones.
+ * A pool of milk you can touch — and, on phones, tilt.
+ * Height-field ripple simulation on a low-res canvas, upscaled (cheap on phones).
+ * Tilting pushes waves toward the low side and slides the light across the surface.
  */
 export default function MilkSurface({ className = "" }: { className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const tilt = useRef<Tilt>({ x: 0, y: 0 });
+  const [tiltState, setTiltState] = useState<"unavailable" | "idle" | "on" | "denied">("unavailable");
+  const [lean, setLean] = useState<Tilt>({ x: 0, y: 0 });
+
+  // offer tilt only on touch devices that have motion sensors
+  useEffect(() => {
+    const touch = window.matchMedia("(pointer: coarse)").matches;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- capability check after mount
+    if (touch && "DeviceOrientationEvent" in window) setTiltState("idle");
+  }, []);
+
+  useEffect(() => {
+    if (tiltState !== "on") return;
+    let last = 0;
+    const onOrient = (e: DeviceOrientationEvent) => {
+      const gx = Math.max(-1, Math.min(1, (e.gamma ?? 0) / 35));
+      const gy = Math.max(-1, Math.min(1, ((e.beta ?? 45) - 45) / 35)); // ~45° is how people hold a phone
+      tilt.current = { x: gx, y: gy };
+      const now = performance.now();
+      if (now - last > 60) {
+        last = now;
+        setLean({ x: gx, y: gy });
+      }
+    };
+    window.addEventListener("deviceorientation", onOrient);
+    return () => window.removeEventListener("deviceorientation", onOrient);
+  }, [tiltState]);
+
+  const enableTilt = async () => {
+    const DOE = window.DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<"granted" | "denied"> };
+    try {
+      if (typeof DOE.requestPermission === "function") {
+        const r = await DOE.requestPermission();
+        if (r !== "granted") return setTiltState("denied");
+      }
+      setTiltState("on");
+      play("slosh");
+    } catch {
+      setTiltState("denied");
+    }
+  };
 
   useEffect(() => {
     const canvas = ref.current;
@@ -17,7 +62,7 @@ export default function MilkSurface({ className = "" }: { className?: string }) 
     if (!ctx) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const SCALE = 6; // px per cell
+    const SCALE = 6;
     let W = 0, H = 0;
     let a = new Float32Array(0), b = new Float32Array(0);
     let img: ImageData;
@@ -65,7 +110,6 @@ export default function MilkSurface({ className = "" }: { className?: string }) 
     canvas.addEventListener("pointerdown", onDown);
     canvas.addEventListener("pointerleave", onLeave);
 
-    // milk colours: deep shadow -> cream -> highlight
     const shade = (v: number) => {
       const t = Math.max(-1, Math.min(1, v / 60));
       if (t >= 0) return [255 - 4 * (1 - t), 252 - 2 * (1 - t) + 3 * t, 244 + 9 * t];
@@ -82,14 +126,25 @@ export default function MilkSurface({ className = "" }: { className?: string }) 
       if (!visible) return;
       frame++;
       if (!reduce && frame % 110 === 0) disturb(2 + Math.random() * (W - 4), 2 + Math.random() * (H - 4), 380, 1);
-      // wave propagation
+
+      // tilt: milk piles up against the low wall, sending waves back across
+      const { x: tx, y: ty } = tilt.current;
+      const mag = Math.hypot(tx, ty);
+      if (mag > 0.08 && frame % 3 === 0) {
+        const n = 6;
+        for (let k = 0; k < n; k++) {
+          const along = 2 + Math.random() * ((Math.abs(tx) > Math.abs(ty) ? H : W) - 4);
+          if (Math.abs(tx) > Math.abs(ty)) disturb(tx > 0 ? W - 3 : 2, along, 120 * mag, 1);
+          else disturb(along, ty > 0 ? H - 3 : 2, 120 * mag, 1);
+        }
+      }
+
       for (let y = 1; y < H - 1; y++)
         for (let x = 1; x < W - 1; x++) {
           const i = y * W + x;
           b[i] = ((a[i - 1] + a[i + 1] + a[i - W] + a[i + W]) / 2 - b[i]) * 0.965;
         }
       [a, b] = [b, a];
-      // shade by slope (light from top-left)
       const d = img.data;
       for (let y = 0; y < H; y++)
         for (let x = 0; x < W; x++) {
@@ -116,5 +171,39 @@ export default function MilkSurface({ className = "" }: { className?: string }) 
     };
   }, []);
 
-  return <canvas ref={ref} className={`h-full w-full touch-pan-y [image-rendering:auto] ${className}`} aria-hidden />;
+  return (
+    <div className={className}>
+      <canvas ref={ref} className="h-full w-full touch-pan-y" aria-hidden />
+      {/* the light on the milk slides toward the low side as you tilt */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 transition-[background-position] duration-300"
+        style={{
+          backgroundImage: "radial-gradient(40% 30% at 50% 50%, rgb(255 255 255 / 0.55), transparent 70%)",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "160% 160%",
+          backgroundPosition: `${50 + lean.x * 40}% ${50 + lean.y * 40}%`,
+          opacity: tiltState === "on" ? 1 : 0,
+        }}
+      />
+      {tiltState !== "unavailable" && (
+        <button
+          type="button"
+          onClick={tiltState === "on" ? () => setTiltState("idle") : enableTilt}
+          className="absolute right-4 top-1/3 z-10 flex items-center gap-2 rounded-full border-2 border-ink bg-milk/85 px-3.5 py-2 text-sm font-semibold text-ink shadow-[0_3px_0_var(--color-ink)] backdrop-blur active:translate-y-0.5 active:shadow-none"
+        >
+          <span aria-hidden className={tiltState === "on" ? "inline-block animate-[wiggle_1.2s_ease-in-out_infinite]" : ""}>
+            📱
+          </span>
+          {tiltState === "on" ? (
+            <T en="Tilting · stop" gu="નમાવો છો · બંધ" />
+          ) : tiltState === "denied" ? (
+            <T en="Motion is off" gu="મોશન બંધ છે" />
+          ) : (
+            <T en="Tilt to pour" gu="નમાવીને રેડો" />
+          )}
+        </button>
+      )}
+    </div>
+  );
 }

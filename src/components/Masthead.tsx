@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/data/site";
 import LangSwitch from "@/components/LangSwitch";
+import SoundSwitch from "@/components/SoundSwitch";
 
 /** The ledger's red cloth spine across the top. */
 export default function Masthead() {
@@ -17,10 +18,11 @@ export default function Masthead() {
             <span className="mt-0.5 block font-gu text-[13px] text-haldi">કર્ણાવતી ડેરી · since 2005</span>
           </span>
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
           <a href={site.phoneHref} className="hidden font-mono text-sm text-milk/85 hover:text-milk lg:block">
             {site.phone}
           </a>
+          <SoundSwitch />
           <LangSwitch />
         </div>
       </div>

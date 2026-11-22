@@ -4,6 +4,7 @@ import Masthead from "@/components/Masthead";
 import ThumbIndex from "@/components/ThumbIndex";
 import Colophon from "@/components/Colophon";
 import { TimeKeeper } from "@/components/Clock";
+import { FestivalBanner } from "@/components/Festival";
 import { bootScript } from "@/lib/daypart";
 import "./globals.css";
 
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-screen font-sans pb-[calc(76px+env(safe-area-inset-bottom))] md:pb-0 md:pr-[5.5rem]">
         <Masthead />
+        <FestivalBanner />
         <main>{children}</main>
         <Colophon />
         <ThumbIndex />

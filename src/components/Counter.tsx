@@ -10,6 +10,7 @@ import { MilkCan, Stepper } from "@/components/bits";
 import T from "@/components/T";
 import BandhiCard from "@/components/BandhiCard";
 import { productsGu } from "@/data/products-gu";
+import Craft from "@/components/Craft";
 
 export default function Counter() {
   const lines = useLines();
@@ -149,6 +150,7 @@ export default function Counter() {
                       </li>
                     ))}
                   </ol>
+                  <Craft slug={c.slug} />
                 </details>
               )}
             </section>

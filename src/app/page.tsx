@@ -6,6 +6,7 @@ import PageTurn from "@/components/PageTurn";
 import T from "@/components/T";
 import { HeroEntry } from "@/components/Clock";
 import BandhiCard from "@/components/BandhiCard";
+import { FestivalDecor } from "@/components/Festival";
 import { MilkCan, Reveal } from "@/components/bits";
 import { categories, skus } from "@/data/catalogue";
 import { journey } from "@/data/site";
@@ -31,6 +32,7 @@ export default function Home() {
       {/* 1 · Touch the milk */}
       <section className="relative h-[calc(100svh-62px-76px)] min-h-[520px] overflow-hidden border-b-4 border-ink md:h-[calc(100svh-62px)]">
         <MilkSurface className="absolute inset-0" />
+        <FestivalDecor />
         <div className="pointer-events-none absolute inset-0 flex flex-col justify-between px-4 pb-8 pt-6 sm:px-8 md:px-12 md:pb-12">
           <div className="flex items-start justify-between gap-4">
             <HeroEntry />

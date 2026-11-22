@@ -243,3 +243,43 @@ html[data-time="dawn"] body::after {
     animation: none !important;
   }
 }
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-14deg); }
+  75% { transform: rotate(14deg); }
+}
+@keyframes drip {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(46px); opacity: 0; }
+}
+.drip { animation: drip 0.9s ease-in infinite; }
+@keyframes float-up {
+  from { transform: translateY(14px) scale(0.6); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.float-up { animation: float-up 0.6s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+
+/* ───────── Festival decorations ───────── */
+@keyframes kite {
+  0% { left: -12%; transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(26px) rotate(8deg); }
+  100% { left: 108%; transform: translateY(0) rotate(-8deg); }
+}
+.kite { animation: kite 18s linear infinite; }
+@keyframes flame {
+  0%, 100% { transform: scaleY(1) skewX(0); }
+  50% { transform: scaleY(1.15) skewX(4deg); }
+}
+.flame { transform-origin: 20px 22px; animation: flame 0.8s ease-in-out infinite; }
+@keyframes swing {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+.swing { transform-origin: top center; animation: swing 3s ease-in-out infinite; }
+@keyframes garba {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  50% { transform: translate(10px, -14px) scale(1.4); opacity: 1; }
+}
+.garba { animation: garba 2.4s ease-in-out infinite; }

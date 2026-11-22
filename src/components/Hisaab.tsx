@@ -8,7 +8,9 @@ import { storeById } from "@/data/stores";
 import { ADVANCE, cart, FREE_DELIVERY_AT, inr, NUDGE_FROM, summarise, useLines } from "@/lib/cart";
 import { cleanMobile, orderMessage, paymentTerms, validPincode, waLink, type Customer } from "@/lib/order";
 import { bandhi, freqLabel, getLastStore, sameLines, setLastStore, useBandhi, type Freq } from "@/lib/bandhi";
-import { useTr } from "@/lib/lang";
+import { useLang, useTr } from "@/lib/lang";
+import { drawBill, shareOrSave } from "@/lib/billImage";
+import { play } from "@/lib/sound";
 import { InkTotal, MilkCan, Stamp, Stepper } from "@/components/bits";
 import StorePicker, { type Picked } from "@/components/StorePicker";
 import Directions, { copyText } from "@/components/Directions";
@@ -16,6 +18,7 @@ import T from "@/components/T";
 
 type Step = "bill" | "visit" | "store" | "details" | "review" | "sent";
 type Mode = "free" | "paid"; // free delivery (3000+) or "continue anyway"
+type Snapshot = { message: string; total: number; free: boolean; items: ReturnType<typeof summarise>["items"] };
 
 const CUSTOMER_KEY = "kd-customer-v1";
 const blank: Customer = { name: "", mobile: "", address: "", pincode: "", notes: "" };
@@ -29,7 +32,7 @@ export default function Hisaab() {
   const [mode, setMode] = useState<Mode>("free");
   const [picked, setPicked] = useState<Picked | null>(null);
   const [customer, setCustomer] = useState<Customer>(blank);
-  const [sentSnapshot, setSentSnapshot] = useState<{ message: string; total: number; free: boolean } | null>(null);
+  const [sentSnapshot, setSentSnapshot] = useState<Snapshot | null>(null);
   const topRef = useRef<HTMLDivElement>(null);
 
   const go = (next: Step) => {
@@ -156,7 +159,7 @@ export default function Hisaab() {
               onSent={(message) => {
                 setLastStore(picked.store.id);
                 if (regular) bandhi.setStore(picked.store.id);
-                setSentSnapshot({ message, total: s.total, free: mode === "free" && s.free });
+                setSentSnapshot({ message, total: s.total, free: mode === "free" && s.free, items: s.items });
                 go("sent");
               }}
               onEdit={() => go("details")}
@@ -321,7 +324,10 @@ function Bill({ s, onFree, onPaid, onVisit }: { s: Summary; onFree: () => void; 
                   <Stepper id={it.sku.id} qty={it.qty} label={tr(`${it.sku.name} ${it.sku.pack}`, `${it.sku.nameGu} ${it.sku.packGu}`)} />
                   <button
                     type="button"
-                    onClick={() => cart.remove(it.sku.id)}
+                    onClick={() => {
+                      play("tick");
+                      cart.remove(it.sku.id);
+                    }}
                     className="text-sm font-semibold text-chopda underline underline-offset-2"
                     aria-label={tr(`Remove ${it.sku.name} ${it.sku.pack}`, `${it.sku.nameGu} ${it.sku.packGu} કાઢો`)}
                   >
@@ -356,7 +362,7 @@ function Bill({ s, onFree, onPaid, onVisit }: { s: Summary; onFree: () => void; 
         <div>
           {s.free ? (
             <>
-              <Stamp tone="leaf" className="text-base">
+              <Stamp tone="leaf" className="text-base" sound="bell">
                 <T en="Free delivery unlocked" gu="મફત ડિલિવરી મળી" />
               </Stamp>
               <p className="mt-3 text-ink-2">
@@ -447,7 +453,7 @@ function SaveBandhi() {
   if (isSaved && !open) {
     return (
       <p className="flex items-center gap-2 text-sm">
-        <Stamp tone="leaf" className="text-xs">
+        <Stamp tone="leaf" className="text-xs" sound={null}>
           <T en={`Regular · ${freqLabel[saved.freq].en}`} gu={`નિયમિત · ${freqLabel[saved.freq].gu}`} />
         </Stamp>
         <button type="button" onClick={() => setOpen(true)} className="font-semibold text-ink-2 underline">
@@ -764,7 +770,7 @@ function Sent({
   onNew,
   onDirections,
 }: {
-  snapshot: { message: string; total: number; free: boolean };
+  snapshot: Snapshot;
   storeName: string;
   storeId: string;
   waHref: string;
@@ -772,7 +778,19 @@ function Sent({
   onDirections: () => void;
 }) {
   const [copied, setCopied] = useState<null | boolean>(null);
+  const [pic, setPic] = useState<"idle" | "busy" | "done" | "error">("idle");
+  const lang = useLang();
   const lines = useLines();
+  const savePicture = async () => {
+    setPic("busy");
+    try {
+      const blob = await drawBill({ items: snapshot.items, total: snapshot.total, free: snapshot.free, storeName, lang });
+      const r = await shareOrSave(blob, `karnavati-hisaab-${new Date().toISOString().slice(0, 10)}.png`);
+      setPic(r === "cancelled" ? "idle" : "done");
+    } catch {
+      setPic("error");
+    }
+  };
   const saved = useBandhi();
   const isRegular = !!saved && sameLines(saved.lines, lines);
   return (
@@ -830,6 +848,27 @@ function Sent({
       )}
 
       <pre className="whitespace-pre-wrap rounded-2xl border border-ink/20 bg-[#e7f6df] p-4 font-mono text-[13px] leading-relaxed">{snapshot.message}</pre>
+
+      <button
+        type="button"
+        onClick={savePicture}
+        disabled={pic === "busy"}
+        className="ledger flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-ink px-6 py-4 font-semibold shadow-[4px_4px_0_var(--color-ink)] active:translate-y-0.5 active:shadow-none"
+      >
+        <span aria-hidden>🧾</span>
+        {pic === "busy" ? (
+          <T en="Writing your bill…" gu="બિલ લખાય છે…" />
+        ) : pic === "done" ? (
+          <T en="Bill picture ready ✓" gu="બિલનું ચિત્ર તૈયાર ✓" />
+        ) : (
+          <T en="Save my bill as a picture" gu="મારું બિલ ચિત્ર તરીકે સાચવો" />
+        )}
+      </button>
+      {pic === "error" && (
+        <p className="text-sm text-chopda">
+          <T en="Couldn’t make the picture on this browser. Copy the order instead." gu="આ બ્રાઉઝર પર ચિત્ર ન બન્યું. તેના બદલે ઓર્ડર કૉપિ કરો." />
+        </p>
+      )}
 
       <div className="grid gap-3 sm:grid-cols-2">
         <button type="button" onClick={async () => setCopied(await copyText(snapshot.message))} className="rounded-full border-2 border-ink bg-milk px-6 py-3.5 font-semibold">

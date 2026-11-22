@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { inr, summarise, useLines } from "@/lib/cart";
 import T from "@/components/T";
+import { play } from "@/lib/sound";
 
 const tabs = [
   { href: "/", en: "Home", gu: "શરૂઆત", guShort: "મુખ્ય", tint: "bg-[#efe3c3]" },
@@ -36,6 +37,7 @@ export default function ThumbIndex() {
               key={t.href}
               href={t.href}
               transitionTypes={turn(i)}
+              onClick={() => !active(t.href) && play("page")}
               aria-current={on ? "page" : undefined}
               className={`group relative flex w-[5.5rem] flex-col items-start rounded-l-xl border border-r-0 border-ink/15 px-3 py-2.5 shadow-[-3px_3px_0_rgb(28_34_54/0.12)] transition-transform duration-300 ${t.tint} ${
                 on ? "-translate-x-3" : "hover:-translate-x-1.5"
@@ -72,6 +74,7 @@ export default function ThumbIndex() {
                 <Link
                   href={t.href}
                   transitionTypes={turn(i)}
+              onClick={() => !active(t.href) && play("page")}
                   aria-current={on ? "page" : undefined}
                   className={`relative flex h-[62px] flex-col items-center justify-center rounded-t-xl border border-b-0 border-ink/15 transition-transform duration-300 ${t.tint} ${
                     on ? "-translate-y-1.5 shadow-[0_-3px_0_rgb(158_27_23/0.9)]" : ""
