@@ -21,7 +21,9 @@ export const metadata: Metadata = {
   },
   description:
     "Pure milk, ghee, paneer, dahi, lassi, ice cream, sweets and farsan from Karnavati Dairy, Ahmedabad. Order on WhatsApp with free delivery above ₹3,000, or find your nearest shop.",
-  icons: { icon: "/images/logo.png" },
+  icons: { icon: "/icons/icon-192.png", apple: "/icons/apple-touch-icon.png" },
+  // iPhone "Add to Home Screen" opens full-screen like an app
+  appleWebApp: { capable: true, title: "Karnavati", statusBarStyle: "black-translucent" },
 };
 
 export const viewport: Viewport = { themeColor: "#9e1b17" };
