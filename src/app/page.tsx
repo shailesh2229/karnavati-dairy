@@ -7,9 +7,10 @@ import T from "@/components/T";
 import { HeroEntry } from "@/components/Clock";
 import BandhiCard from "@/components/BandhiCard";
 import { FestivalDecor } from "@/components/Festival";
-import { MilkCan, Reveal } from "@/components/bits";
+import OrderSlider from "@/components/OrderSlider";
+import LedgerPages from "@/components/LedgerPages";
+import CounterTV from "@/components/CounterTV";
 import { categories, skus } from "@/data/catalogue";
-import { journey } from "@/data/site";
 import { stores } from "@/data/stores";
 import { inr } from "@/lib/money";
 
@@ -18,13 +19,6 @@ const shelf = categories.map((c) => {
   return { ...c, from: Math.min(...items.map((s) => s.price)), image: items.find((s) => s.image)?.image };
 });
 
-const notes = [
-  ["first ghee, first customers", "પહેલું ઘી, પહેલા ગ્રાહક"],
-  ["two shops now!", "હવે બે દુકાન!"],
-  ["named after Ahmedabad", "અમદાવાદના નામ પરથી"],
-  ["~50 places", "~50 જગ્યા"],
-  ["20,000 sq ft", "20,000 ચો.ફૂ."],
-];
 
 export default function Home() {
   return (
@@ -129,66 +123,14 @@ export default function Home() {
         </ul>
       </section>
 
-      {/* 4 · The ₹3,000 promise */}
-      <section className="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
-        <Reveal className="ledger relative overflow-hidden rounded-3xl border-2 border-ink p-6 pl-16 shadow-[8px_8px_0_var(--color-ink)] sm:p-10 md:pl-32">
-          <div className="grid items-center gap-8 md:grid-cols-[1fr_auto]">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-chopda">
-                <T en="How ordering works" gu="ઓર્ડર કેવી રીતે કરવો" />
-              </p>
-              <h2 className="mt-3 font-display text-4xl leading-[1.05] sm:text-6xl">
-                <T
-                  en={<>Fill the can to <span className="whitespace-nowrap text-chopda">₹3,000</span>, we deliver free. Anywhere in India.</>}
-                  gu={<>કેન <span className="whitespace-nowrap text-chopda">₹3,000</span> સુધી ભરો, ડિલિવરી મફત. ભારતમાં ક્યાંય પણ.</>}
-                />
-              </h2>
-              <ol className="mt-8 space-y-0 text-lg leading-[2.75rem]">
-                <li><span className="font-mono text-chopda">1.</span> <T en="Pick from the counter. Your hisaab fills as you go." gu="દુકાનમાંથી પસંદ કરો. તમારો હિસાબ સાથે સાથે ભરાતો જશે." /></li>
-                <li><span className="font-mono text-chopda">2.</span> <T en="Above ₹3,000: free delivery. Order goes to your nearest shop on WhatsApp." gu="₹3,000 થી વધુ: મફત ડિલિવરી. ઓર્ડર WhatsApp પર નજીકની દુકાને જાય." /></li>
-                <li><span className="font-mono text-chopda">3.</span> <T en="₹500 advance to the shop confirms it; the rest on delivery." gu="દુકાનને ₹500 એડવાન્સથી ઓર્ડર પાકો; બાકી ડિલિવરી વખતે." /></li>
-                <li><span className="font-mono text-chopda">4.</span> <T en="Under ₹3,000? We’ll walk you to the nearest shop, or book your Uber, Ola or Rapido to the door." gu="₹3,000 થી ઓછું? નજીકની દુકાનનો રસ્તો બતાવીશું, અથવા Uber, Ola કે Rapido સીધું દરવાજા સુધી." /></li>
-              </ol>
-              <Link href="/products" transitionTypes={["turn-fwd"]} className="mt-6 inline-block rounded-full bg-ink px-6 py-3.5 font-semibold text-milk shadow-[0_4px_0_var(--color-chopda)] transition active:translate-y-1 active:shadow-none">
-                <T en="Start filling the can" gu="કેન ભરવાનું શરૂ કરો" />
-              </Link>
-            </div>
-            <MilkCan progress={0.72} free={false} className="mx-auto h-56 w-auto md:h-80" />
-          </div>
-        </Reveal>
-      </section>
+      {/* 4 · Counter TV: reels and videos */}
+      <CounterTV />
 
-      {/* 5 · From the old ledger */}
-      <section className="mx-auto mt-24 max-w-6xl px-4 sm:px-6" aria-labelledby="ledger-title">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-chopda">
-          <T en="From the old ledger" gu="જૂના ચોપડામાંથી" />
-        </p>
-        <h2 id="ledger-title" className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
-          <T en="Amar Dairy, 2005. Karnavati, ever since." gu="2005 માં અમર ડેરી. ત્યારથી કર્ણાવતી." />
-        </h2>
-        <div className="mt-8 overflow-hidden rounded-2xl border-2 border-ink bg-milk">
-          <div className="grid grid-cols-[4.5rem_1fr] border-b-2 border-ink bg-paper-2 font-mono text-xs uppercase tracking-[0.15em] sm:grid-cols-[7rem_1fr_12rem]">
-            <span className="border-r border-margin/60 px-3 py-2.5"><T en="Year" gu="વર્ષ" /></span>
-            <span className="px-4 py-2.5"><T en="Entry" gu="નોંધ" /></span>
-            <span className="hidden border-l border-ink/20 px-4 py-2.5 sm:block"><T en="Note" gu="ટિપ્પણી" /></span>
-          </div>
-          {journey.map((j, k) => (
-            <Reveal key={j.year} delay={k * 80} className="grid grid-cols-[4.5rem_1fr] border-b border-rule last:border-0 sm:grid-cols-[7rem_1fr_12rem]">
-              <span className="border-r border-margin/60 px-3 py-4 font-mono text-lg font-semibold text-chopda">{j.year}</span>
-              <div className="px-4 py-4">
-                <p className="font-display text-xl"><T en={j.title} gu={j.titleGu} /></p>
-                <p className="mt-1 text-ink-2"><T en={j.text} gu={j.textGu} /></p>
-              </div>
-              <span className="hidden border-l border-ink/20 px-4 py-4 font-hand text-xl leading-snug text-ink-2 sm:block">
-                <T en={notes[k][0]} gu={<span className="text-base">{notes[k][1]}</span>} />
-              </span>
-            </Reveal>
-          ))}
-        </div>
-        <Link href="/story" transitionTypes={["turn-fwd"]} className="mt-6 inline-block font-semibold text-chopda underline decoration-2 underline-offset-4">
-          <T en="Read the whole story →" gu="આખી વાર્તા વાંચો →" />
-        </Link>
-      </section>
+      {/* 5 · How ordering works, as a slider you play with */}
+      <OrderSlider />
+
+      {/* 6 · The old ledger, pages you turn */}
+      <LedgerPages />
     </PageTurn>
   );
 }

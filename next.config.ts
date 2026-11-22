@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    // YouTube thumbnails for Counter TV posters
+    remotePatterns: [{ protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" }],
+  },
   async redirects() {
     return [
       { source: "/about", destination: "/story", permanent: true },
