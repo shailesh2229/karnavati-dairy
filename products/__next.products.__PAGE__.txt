@@ -1,0 +1,22 @@
+1:"$Sreact.fragment"
+2:"$Sreact.view_transition"
+3:I[68533,["/karnavati-dairy/_next/static/chunks/036lv6gkca5x5.js","/karnavati-dairy/_next/static/chunks/24enwwtex0gx1.js","/karnavati-dairy/_next/static/chunks/1wj_98gjfb3yr.js"],"default"]
+4:I[97367,["/karnavati-dairy/_next/static/chunks/036lv6gkca5x5.js","/karnavati-dairy/_next/static/chunks/24enwwtex0gx1.js"],"OutletBoundary"]
+5:"$Sreact.suspense"
+9:I[97367,["/karnavati-dairy/_next/static/chunks/036lv6gkca5x5.js","/karnavati-dairy/_next/static/chunks/24enwwtex0gx1.js"],"ViewportBoundary"]
+a:I[97367,["/karnavati-dairy/_next/static/chunks/036lv6gkca5x5.js","/karnavati-dairy/_next/static/chunks/24enwwtex0gx1.js"],"MetadataBoundary"]
+b:I[27201,["/karnavati-dairy/_next/static/chunks/036lv6gkca5x5.js","/karnavati-dairy/_next/static/chunks/24enwwtex0gx1.js"],"IconMark"]
+d:I[39756,["/karnavati-dairy/_next/static/chunks/036lv6gkca5x5.js","/karnavati-dairy/_next/static/chunks/24enwwtex0gx1.js"],"default"]
+e:I[37457,["/karnavati-dairy/_next/static/chunks/036lv6gkca5x5.js","/karnavati-dairy/_next/static/chunks/24enwwtex0gx1.js"],"default"]
+8:X
+10:X
+10:C
+0:{"buildId":"PTv_P_P5_eFZzW5o7-KMr","data":[{"rsc":["$","$1","c",{"children":[["$","$2",null,{"enter":{"turn-fwd":"turn-fwd","turn-back":"turn-back","default":"none"},"exit":{"turn-fwd":"turn-fwd","turn-back":"turn-back","default":"none"},"default":"none","children":["$","div",null,{"children":[["$","section",null,{"className":"mx-auto max-w-6xl px-4 pt-10 sm:px-6 sm:pt-14","children":[["$","p",null,{"className":"font-mono text-xs uppercase tracking-[0.2em] text-chopda","children":[["$","span",null,{"className":"l-en","children":"The counter"}],["$","span",null,{"className":"l-gu","lang":"gu","children":"દુકાન"}]]}],["$","h1",null,{"className":"mt-2 max-w-3xl font-display text-5xl leading-[0.95] sm:text-7xl","children":[["$","span",null,{"className":"l-en","children":"Write it in the book."}],["$","span",null,{"className":"l-gu","lang":"gu","children":"ચોપડામાં લખી દો."}]]}],["$","p",null,{"className":"mt-4 max-w-xl text-lg text-ink-2","children":[["$","span",null,{"className":"l-en","children":"Tap to add. Every line goes into your hisaab, and the can fills toward free delivery at ₹3,000."}],["$","span",null,{"className":"l-gu","lang":"gu","children":"ઉમેરવા ટૅપ કરો. દરેક લીટી તમારા હિસાબમાં જાય છે, અને ₹3,000 એ મફત ડિલિવરી સુધી કેન ભરાતું જાય છે."}]]}]]}],["$","$L3",null,{}]]}]}],[["$","script","script-0",{"src":"/karnavati-dairy/_next/static/chunks/1wj_98gjfb3yr.js","async":true}]],["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]]}],"isPartial":"$@7","staleTime":"$8","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$L9",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#9e1b17"}]]}],["$","div",null,{"hidden":true,"children":["$","$La",null,{"children":["$","$5",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"The Counter · Karnavati Dairy"}],["$","meta","1",{"name":"description","content":"Milk, chaas, ghee, paneer, dahi, butter, lassi, ice cream, sweets, farsan and oil. Add to your hisaab — free delivery above ₹3,000."}],["$","link","2",{"rel":"manifest","href":"/karnavati-dairy/manifest.webmanifest"}],["$","meta","3",{"name":"mobile-web-app-capable","content":"yes"}],["$","meta","4",{"name":"apple-mobile-web-app-title","content":"Karnavati"}],["$","meta","5",{"name":"apple-mobile-web-app-status-bar-style","content":"black-translucent"}],["$","link","6",{"rel":"icon","href":"/karnavati-dairy/icons/icon-192.png"}],["$","link","7",{"rel":"apple-touch-icon","href":"/karnavati-dairy/icons/apple-touch-icon.png"}],["$","$Lb","8",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isPartial":"$@c","staleTime":"$8","varyParams":null},{"rsc":["$","$1","c",{"children":[null,["$","$Ld",null,{"parallelRouterKey":"children","template":["$","$Le",null,{}]}]]}],"isPartial":"$@f","staleTime":"$8","varyParams":"$10"}],"isUpgradeableISRFallback":false,"a":"$@11","rootVaryParams":null,"needsRuntimeRequest":"$@12"}
+6:null
+12:true
+8:300
+8:C
+11:0
+c:"$undefined"
+f:"$undefined"
+7:"$undefined"
