@@ -28,8 +28,8 @@ export default function OrderSlider() {
       </p>
       <h2 id="how-title" className="mt-2 max-w-3xl font-display text-4xl leading-[1.02] sm:text-6xl">
         <T
-          en={<>Fill the can to <span className="text-chopda">₹3,000</span>. We deliver free, anywhere in India.</>}
-          gu={<>કેન <span className="text-chopda">₹3,000</span> સુધી ભરો. ડિલિવરી મફત, ભારતમાં ક્યાંય પણ.</>}
+          en={<>Fill the can to <span className="text-chopda">₹3,000</span>. We deliver free in Ahmedabad.</>}
+          gu={<>કેન <span className="text-chopda">₹3,000</span> સુધી ભરો. અમદાવાદમાં ડિલિવરી મફત.</>}
         />
       </h2>
 
@@ -86,7 +86,7 @@ export default function OrderSlider() {
                   <T en="Free delivery" gu="મફત ડિલિવરી" />
                 </Stamp>
                 <p className="mt-4 font-display text-2xl leading-snug sm:text-3xl">
-                  <T en="We bring it to your door, anywhere in India." gu="ભારતમાં ક્યાંય પણ, તમારા દરવાજે પહોંચાડીશું." />
+                  <T en="We bring it to your door, anywhere in Ahmedabad." gu="અમદાવાદમાં ક્યાંય પણ, તમારા દરવાજે પહોંચાડીશું." />
                 </p>
                 <div className="mt-4 grid max-w-md grid-cols-2 gap-3">
                   <div className="rounded-2xl border-2 border-ink/15 bg-paper/60 p-3">

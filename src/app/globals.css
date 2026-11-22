@@ -372,3 +372,9 @@ html[data-time="dawn"] body::after {
     0 3px 0 #e2c992,
     calc(var(--t) * 30px) 18px 30px -14px rgb(60 40 10 / 0.5);
 }
+
+@keyframes you-pulse {
+  0% { transform: scale(0.6); opacity: 0.5; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.you-pulse { animation: you-pulse 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }

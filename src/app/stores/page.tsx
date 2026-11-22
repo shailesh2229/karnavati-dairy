@@ -21,6 +21,14 @@ export default function StoresPage() {
           gu="સૌથી નજીકની કર્ણાવતી દુકાન શોધો, પછી ચાલીને, ગાડીમાં, કે Uber, Ola કે Rapido થી સીધા દરવાજે પહોંચો."
         />
       </p>
+      <ul className="mt-6 flex flex-wrap gap-3" aria-label="Shops by region">
+        <li className="stamp rotate-[-3deg] px-3 py-1.5 font-mono text-sm font-semibold text-chopda">
+          {stores.filter((s) => s.region === "Ahmedabad").length} · <T en="Ahmedabad" gu="અમદાવાદ" />
+        </li>
+        <li className="stamp rotate-[2deg] px-3 py-1.5 font-mono text-sm font-semibold text-leaf">
+          {stores.filter((s) => s.region === "North Gujarat").length} · <T en="North Gujarat" gu="ઉત્તર ગુજરાત" />
+        </li>
+      </ul>
       <ShopFinder />
     </div>
     </PageTurn>

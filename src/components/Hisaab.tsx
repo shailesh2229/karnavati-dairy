@@ -15,6 +15,8 @@ import { InkTotal, MilkCan, Stamp, Stepper } from "@/components/bits";
 import StorePicker, { type Picked } from "@/components/StorePicker";
 import Directions, { copyText } from "@/components/Directions";
 import T from "@/components/T";
+import { FREE_DELIVERY_AREAS, isFreeDeliveryPin } from "@/config/delivery";
+import type { Detected } from "@/lib/locate";
 
 type Step = "bill" | "visit" | "store" | "details" | "review" | "sent";
 type Mode = "free" | "paid"; // free delivery (3000+) or "continue anyway"
@@ -63,6 +65,16 @@ export default function Hisaab() {
   const freeLost = mode === "free" && !s.free && (step === "store" || step === "details" || step === "review");
   const emptyMidway = s.count === 0 && step !== "bill" && step !== "visit" && step !== "sent";
   const regular = saved && sameLines(lines, saved.lines) ? freqLabel[saved.freq].en : null;
+  const [detected, setDetected] = useState<Detected | null>(null);
+  // free delivery needs ₹3,000+ AND a delivery PIN inside FREE_DELIVERY_AREAS (Ahmedabad)
+  const freeHere = mode === "free" && s.free && isFreeDeliveryPin(customer.pincode);
+  const outsideFree = mode === "free" && !!detected && !detected.free;
+  const onDetect = (d: Detected | null) => {
+    setDetected(d);
+    if (!d) return;
+    // auto-fill the delivery PIN and area from what we detected
+    setCustomer((c) => ({ ...c, pincode: d.pin ?? c.pincode, address: c.address.trim() ? c.address : d.area ? `${d.area}, ` : c.address }));
+  };
 
   return (
     <div ref={topRef} className="mx-auto max-w-3xl scroll-mt-4 px-4 pt-10 sm:px-6 sm:pt-14">
@@ -127,9 +139,37 @@ export default function Hisaab() {
                   <T en={`your usual shop: ${picked.store.name} ✓`} gu={<span className="text-lg">તમારી હંમેશની દુકાન: {picked.store.name} ✓</span>} />
                 </p>
               )}
-              <StorePicker selectedId={picked?.store.id ?? null} onPick={setPicked} />
-              <StickyAction disabled={!picked} onClick={() => go("details")}>
-                {picked ? <T en={`Deliver from ${picked.store.name} →`} gu={`${picked.store.name} થી ડિલિવરી →`} /> : <T en="Choose a shop to continue" gu="આગળ વધવા દુકાન પસંદ કરો" />}
+              <StorePicker selectedId={picked?.store.id ?? null} onPick={setPicked} onDetect={onDetect} showFreeInfo={mode === "free"} />
+              {outsideFree && picked && (
+                <div role="alert" className="mt-6 space-y-4">
+                  <div className="rounded-2xl border-2 border-chopda bg-chopda/5 p-4">
+                    <p className="font-semibold">
+                      <T en="Free delivery is available only in Ahmedabad." gu="મફત ડિલિવરી ફક્ત અમદાવાદમાં જ છે." />
+                    </p>
+                    <p className="mt-1 text-sm text-ink-2">
+                      <T
+                        en={`${detected?.area ?? "Your location"} is outside our free-delivery area (${FREE_DELIVERY_AREAS.label.en}). Visit your nearest shop, or order on WhatsApp and the shop will tell you the delivery charge.`}
+                        gu={`${detected?.area ?? "તમારું સ્થાન"} અમારા મફત ડિલિવરી વિસ્તાર (${FREE_DELIVERY_AREAS.label.gu}) ની બહાર છે. નજીકની દુકાને આવો, અથવા WhatsApp પર ઓર્ડર કરો — દુકાન ડિલિવરી ચાર્જ જણાવશે.`}
+                      />
+                    </p>
+                  </div>
+                  <Directions store={picked.store} km={picked.km} />
+                </div>
+              )}
+              <StickyAction
+                disabled={!picked}
+                onClick={() => {
+                  if (outsideFree) setMode("paid");
+                  go("details");
+                }}
+              >
+                {!picked ? (
+                  <T en="Choose a shop to continue" gu="આગળ વધવા દુકાન પસંદ કરો" />
+                ) : outsideFree ? (
+                  <T en={`Order on WhatsApp from ${picked.store.name} · delivery charges apply →`} gu={`${picked.store.name} પર WhatsApp ઓર્ડર · ડિલિવરી ચાર્જ લાગશે →`} />
+                ) : (
+                  <T en={`Deliver from ${picked.store.name} →`} gu={`${picked.store.name} થી ડિલિવરી →`} />
+                )}
               </StickyAction>
             </section>
           )}
@@ -152,14 +192,15 @@ export default function Hisaab() {
           {step === "review" && picked && (
             <Review
               s={s}
-              free={mode === "free" && s.free}
+              free={freeHere}
+              wantedFree={mode === "free" && s.free}
               store={picked.store}
               customer={customer}
               regular={regular}
               onSent={(message) => {
                 setLastStore(picked.store.id);
                 if (regular) bandhi.setStore(picked.store.id);
-                setSentSnapshot({ message, total: s.total, free: mode === "free" && s.free, items: s.items });
+                setSentSnapshot({ message, total: s.total, free: freeHere, items: s.items });
                 go("sent");
               }}
               onEdit={() => go("details")}
@@ -366,7 +407,7 @@ function Bill({ s, onFree, onPaid, onVisit }: { s: Summary; onFree: () => void; 
                 <T en="Free delivery unlocked" gu="મફત ડિલિવરી મળી" />
               </Stamp>
               <p className="mt-3 text-ink-2">
-                <T en="The can is full. We’ll deliver this order free, anywhere in India." gu="કેન ભરાઈ ગયું. આ ઓર્ડર ભારતમાં ક્યાંય પણ મફત પહોંચાડીશું." />
+                <T en="The can is full. We’ll deliver this order free anywhere in Ahmedabad — we check your PIN code next." gu="કેન ભરાઈ ગયું. અમદાવાદમાં ક્યાંય પણ આ ઓર્ડર મફત પહોંચાડીશું — આગળ પિનકોડ તપાસીશું." />
               </p>
             </>
           ) : s.nudge ? (
@@ -599,6 +640,7 @@ function Details({ customer: c, onChange, onNext }: { customer: Customer; onChan
 function Review({
   s,
   free,
+  wantedFree,
   store,
   customer,
   regular,
@@ -608,6 +650,7 @@ function Review({
 }: {
   s: Summary;
   free: boolean;
+  wantedFree: boolean;
   store: Picked["store"];
   customer: Customer;
   regular: string | null;
@@ -619,6 +662,16 @@ function Review({
   const [showMsg, setShowMsg] = useState(false);
   return (
     <div className="space-y-6">
+      {wantedFree && !free && (
+        <div role="alert" className="rounded-2xl border-2 border-chopda bg-chopda/5 p-4">
+          <p className="font-semibold">
+            <T en={`PIN ${customer.pincode} is outside our free-delivery area.`} gu={`પિન ${customer.pincode} મફત ડિલિવરી વિસ્તારની બહાર છે.`} />
+          </p>
+          <p className="mt-1 text-sm text-ink-2">
+            <T en="Free delivery is available only in Ahmedabad. The shop will confirm the delivery charge on WhatsApp." gu="મફત ડિલિવરી ફક્ત અમદાવાદમાં છે. દુકાન WhatsApp પર ડિલિવરી ચાર્જ કન્ફર્મ કરશે." />
+          </p>
+        </div>
+      )}
       <div className="ledger overflow-hidden rounded-3xl border-2 border-ink shadow-[6px_6px_0_var(--color-ink)]">
         <div className="border-b-2 border-ink bg-paper-2/70 py-4 pl-14 pr-5 md:pl-28">
           {free ? (
