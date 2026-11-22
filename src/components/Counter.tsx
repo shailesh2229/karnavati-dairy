@@ -7,6 +7,9 @@ import { categories, skus } from "@/data/catalogue";
 import { products } from "@/data/products";
 import { FREE_DELIVERY_AT, inr, summarise, useLines } from "@/lib/cart";
 import { MilkCan, Stepper } from "@/components/bits";
+import T from "@/components/T";
+import BandhiCard from "@/components/BandhiCard";
+import { productsGu } from "@/data/products-gu";
 
 export default function Counter() {
   const lines = useLines();
@@ -34,6 +37,7 @@ export default function Counter() {
   return (
     <div className="mx-auto mt-8 max-w-6xl px-4 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-10">
       <div>
+        <BandhiCard className="mb-6" />
         {/* category tabs */}
         <nav aria-label="Categories" className="sticky top-0 z-30 -mx-4 border-b border-ink/15 bg-paper/95 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
           <ul className="no-scrollbar flex gap-2 overflow-x-auto">
@@ -47,7 +51,7 @@ export default function Counter() {
                   }`}
                 >
                   <span className={`font-gu text-[13px] ${active === c.slug ? "text-haldi" : "text-chopda"}`}>{c.gu}</span>
-                  {c.en}
+                  <span className="l-en">{c.en}</span>
                 </a>
               </li>
             ))}
@@ -61,11 +65,15 @@ export default function Counter() {
             <section key={c.slug} id={c.slug} className="scroll-mt-20 pt-12" aria-labelledby={`h-${c.slug}`}>
               <div className="flex items-end justify-between gap-4">
                 <div>
-                  <p className="font-mono text-xs text-ink-2">Page {String(ci + 1).padStart(2, "0")}</p>
+                  <p className="font-mono text-xs text-ink-2">
+                    <T en="Page" gu="પાનું" /> {String(ci + 1).padStart(2, "0")}
+                  </p>
                   <h2 id={`h-${c.slug}`} className="font-display text-4xl leading-none sm:text-5xl">
-                    {c.en}
+                    <T en={c.en} gu={c.gu} />
                   </h2>
-                  <p className="mt-2 text-ink-2">{c.line}</p>
+                  <p className="mt-2 text-ink-2">
+                    <T en={c.line} gu={c.lineGu} />
+                  </p>
                 </div>
                 <span aria-hidden className="select-none font-gu text-6xl font-bold leading-none text-transparent sm:text-8xl" style={{ WebkitTextStroke: "1.5px var(--color-chopda)" }}>
                   {c.gu}
@@ -86,10 +94,17 @@ export default function Counter() {
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-display text-lg leading-tight sm:text-xl">{it.name}</p>
+                        <p className="font-display text-lg leading-tight sm:text-xl">
+                          <T en={it.name} gu={it.nameGu} />
+                        </p>
                         <p className="text-sm text-ink-2">
-                          {it.pack}
-                          {it.note && <span className="hidden sm:inline"> · {it.note}</span>}
+                          <T en={it.pack} gu={it.packGu} />
+                          {it.note && (
+                            <span className="hidden sm:inline">
+                              {" · "}
+                              <T en={it.note} gu={it.noteGu ?? it.note} />
+                            </span>
+                          )}
                         </p>
                         <p className="font-mono text-[15px] font-semibold text-chopda sm:hidden">{inr(it.price)}</p>
                       </div>
@@ -107,19 +122,29 @@ export default function Counter() {
                 <details className="group mt-3 rounded-2xl border border-ink/15 bg-milk/60 px-5 py-3 open:pb-5">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold">
                     <span>
-                      How we make our {c.en.toLowerCase()} <span className="font-hand text-xl font-normal text-chopda">(the slow way)</span>
+                      <T en={`How we make our ${c.en.toLowerCase()}`} gu={`અમારું ${c.gu} કેવી રીતે બને છે`} />{" "}
+                      <span className="font-hand text-xl font-normal text-chopda">
+                        <T en="(the slow way)" gu={<span className="text-base">(ધીરજથી)</span>} />
+                      </span>
                     </span>
                     <span className="grid size-7 place-items-center rounded-full border border-ink text-sm transition-transform group-open:rotate-45" aria-hidden>
                       +
                     </span>
                   </summary>
-                  <p className="mt-3 text-ink-2">{p.intro[0]}</p>
+                  <p className="mt-3 text-ink-2">
+                    <T en={p.intro[0]} gu={productsGu[c.slug]?.intro ?? p.intro[0]} />
+                  </p>
                   <ol className="mt-4 grid gap-3 sm:grid-cols-2">
                     {p.process.map((st, k) => (
                       <li key={st.title} className="flex gap-3">
                         <span className="font-mono text-sm font-semibold text-chopda">{String(k + 1).padStart(2, "0")}</span>
                         <span>
-                          <strong className="font-semibold">{st.title}.</strong> <span className="text-ink-2">{st.text}</span>
+                          <strong className="font-semibold">
+                            <T en={st.title} gu={productsGu[c.slug]?.process[k]?.[0] ?? st.title} />.
+                          </strong>{" "}
+                          <span className="text-ink-2">
+                            <T en={st.text} gu={productsGu[c.slug]?.process[k]?.[1] ?? st.text} />
+                          </span>
                         </span>
                       </li>
                     ))}
@@ -131,29 +156,38 @@ export default function Counter() {
         })}
 
         <p className="mt-10 font-hand text-xl text-ink-2">
-          Prices shown are placeholders for this preview. The shop confirms the final bill on WhatsApp.
+          <T en="Prices shown are placeholders for this preview. The shop confirms the final bill on WhatsApp." gu={<span className="text-base">આ ભાવ હાલ નમૂના માટે છે. અંતિમ બિલ દુકાન WhatsApp પર કન્ફર્મ કરશે.</span>} />
         </p>
       </div>
 
       {/* desktop: running hisaab */}
       <aside className="hidden lg:block">
         <div className="sticky top-6 mt-14 rounded-2xl border-2 border-ink bg-milk p-5 shadow-[5px_5px_0_var(--color-ink)]">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-chopda">Your hisaab</p>
+          <p className="font-mono text-xs uppercase tracking-[0.18em] text-chopda">
+            <T en="Your hisaab" gu="તમારો હિસાબ" />
+          </p>
           <MilkCan progress={s.progress} free={s.free} className="mx-auto mt-2 h-40 w-auto" />
           <p key={s.total} className="animate-pop mt-2 text-center font-mono text-3xl font-semibold">{inr(s.total)}</p>
           <p className="mt-1 text-center text-sm text-ink-2">
-            {s.count === 0
-              ? `Free delivery from ${inr(FREE_DELIVERY_AT)}`
-              : s.free
-                ? "Free delivery unlocked!"
-                : `${inr(s.gap)} more for free delivery`}
+            {s.count === 0 ? (
+              <T en={`Free delivery from ${inr(FREE_DELIVERY_AT)}`} gu={`${inr(FREE_DELIVERY_AT)} થી મફત ડિલિવરી`} />
+            ) : s.free ? (
+              <T en="Free delivery unlocked!" gu="મફત ડિલિવરી મળી ગઈ!" />
+            ) : (
+              <T en={`${inr(s.gap)} more for free delivery`} gu={`મફત ડિલિવરી માટે ${inr(s.gap)} વધુ`} />
+            )}
           </p>
           <Link
             href="/hisaab"
+            transitionTypes={["turn-fwd"]}
             className={`mt-4 block rounded-full py-3 text-center font-semibold transition ${s.count ? "bg-chopda text-milk shadow-[0_4px_0_var(--color-chopda-dark)] active:translate-y-1 active:shadow-none" : "pointer-events-none bg-ink/10 text-ink/40"}`}
             aria-disabled={!s.count}
           >
-            {s.count ? `Open hisaab · ${s.count} item${s.count > 1 ? "s" : ""}` : "Nothing added yet"}
+            {s.count ? (
+              <T en={`Open hisaab · ${s.count} item${s.count > 1 ? "s" : ""}`} gu={`હિસાબ ખોલો · ${s.count} વસ્તુ`} />
+            ) : (
+              <T en="Nothing added yet" gu="હજુ કંઈ ઉમેર્યું નથી" />
+            )}
           </Link>
         </div>
       </aside>

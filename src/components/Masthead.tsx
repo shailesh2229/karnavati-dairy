@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/data/site";
+import LangSwitch from "@/components/LangSwitch";
 
 /** The ledger's red cloth spine across the top. */
 export default function Masthead() {
@@ -12,13 +13,16 @@ export default function Masthead() {
             <Image src="/images/logo.png" alt="" width={34} height={37} className="h-9 w-auto" preload />
           </span>
           <span className="leading-none">
-            <span className="block font-display text-xl font-semibold tracking-tight">Karnavati Dairy</span>
+            <span className="block font-display text-lg font-semibold tracking-tight sm:text-xl">Karnavati Dairy</span>
             <span className="mt-0.5 block font-gu text-[13px] text-haldi">કર્ણાવતી ડેરી · since 2005</span>
           </span>
         </Link>
-        <a href={site.phoneHref} className="hidden font-mono text-sm text-milk/85 hover:text-milk sm:block">
-          {site.phone}
-        </a>
+        <div className="flex items-center gap-4">
+          <a href={site.phoneHref} className="hidden font-mono text-sm text-milk/85 hover:text-milk lg:block">
+            {site.phone}
+          </a>
+          <LangSwitch />
+        </div>
       </div>
       <div className="stitch absolute inset-x-0 bottom-1 h-0.5 opacity-70" aria-hidden />
     </header>

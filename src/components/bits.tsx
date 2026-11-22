@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { cart, FREE_DELIVERY_AT } from "@/lib/cart";
+import { useEffect, useRef, useState } from "react";
+import { cart, FREE_DELIVERY_AT, inr } from "@/lib/cart";
+import { useTr } from "@/lib/lang";
+import T from "@/components/T";
 
 /** Fades/rises children in when they scroll into view. */
 export function Reveal({ children, className = "", delay = 0, as: Tag = "div" }: { children: React.ReactNode; className?: string; delay?: number; as?: "div" | "li" | "section" }) {
@@ -35,28 +37,29 @@ export function Reveal({ children, className = "", delay = 0, as: Tag = "div" }:
 
 /** Quantity stepper. At 0 it becomes a single "add" button. */
 export function Stepper({ id, qty, label, size = "md" }: { id: string; qty: number; label: string; size?: "md" | "lg" }) {
+  const tr = useTr();
   const h = size === "lg" ? "h-12" : "h-11";
   if (qty === 0) {
     return (
       <button
         type="button"
         onClick={() => cart.add(id)}
-        aria-label={`Add ${label}`}
+        aria-label={tr(`Add ${label}`, `${label} ઉમેરો`)}
         className={`${h} rounded-full border-2 border-ink bg-milk px-5 font-semibold text-ink shadow-[0_3px_0_var(--color-ink)] transition active:translate-y-[3px] active:shadow-none hover:bg-haldi`}
       >
-        Add
+        <T en="Add" gu="ઉમેરો" />
       </button>
     );
   }
   return (
-    <div className={`${h} inline-flex items-center rounded-full border-2 border-ink bg-ink text-milk shadow-[0_3px_0_var(--color-chopda)]`} role="group" aria-label={`Quantity of ${label}`}>
-      <button type="button" onClick={() => cart.setQty(id, qty - 1)} aria-label={`One less ${label}`} className={`grid ${h} w-11 place-items-center rounded-l-full text-xl hover:bg-white/10`}>
+    <div className={`${h} inline-flex items-center rounded-full border-2 border-ink bg-ink text-milk shadow-[0_3px_0_var(--color-chopda)]`} role="group" aria-label={tr(`Quantity of ${label}`, `${label} નો જથ્થો`)}>
+      <button type="button" onClick={() => cart.setQty(id, qty - 1)} aria-label={tr(`One less ${label}`, `${label} એક ઓછું`)} className={`grid ${h} w-11 place-items-center rounded-l-full text-xl hover:bg-white/10`}>
         −
       </button>
       <span key={qty} className="animate-pop min-w-7 text-center font-mono text-base font-semibold" aria-live="polite">
         {qty}
       </span>
-      <button type="button" onClick={() => cart.add(id)} aria-label={`One more ${label}`} className={`grid ${h} w-11 place-items-center rounded-r-full text-xl hover:bg-white/10`}>
+      <button type="button" onClick={() => cart.add(id)} aria-label={tr(`One more ${label}`, `${label} એક વધુ`)} className={`grid ${h} w-11 place-items-center rounded-r-full text-xl hover:bg-white/10`}>
         +
       </button>
     </div>
@@ -113,4 +116,25 @@ export function MilkCan({ progress, free, className = "" }: { progress: number; 
 export function Stamp({ children, tone = "chopda", className = "" }: { children: React.ReactNode; tone?: "chopda" | "leaf" | "ink"; className?: string }) {
   const c = { chopda: "text-chopda", leaf: "text-leaf", ink: "text-ink" }[tone];
   return <span className={`stamp animate-thunk inline-block px-3 py-1.5 font-mono text-sm font-semibold ${c} ${className}`}>{children}</span>;
+}
+
+/**
+ * A total written in the ledger: when it changes, the old figure is struck through
+ * with a pen and fades, and the new one is inked in.
+ */
+export function InkTotal({ value, className = "" }: { value: number; className?: string }) {
+  const [hist, setHist] = useState<{ prev: number | null; cur: number; n: number }>({ prev: null, cur: value, n: 0 });
+  if (hist.cur !== value) setHist({ prev: hist.cur, cur: value, n: hist.n + 1 });
+  return (
+    <span className={`relative inline-flex flex-col items-end ${className}`}>
+      {hist.prev !== null && (
+        <span key={`p${hist.n}`} aria-hidden className="strike fade-off pointer-events-none absolute -top-[0.9em] right-0 text-[0.55em] text-chopda">
+          {inr(hist.prev)}
+        </span>
+      )}
+      <span key={`c${hist.n}`} className={hist.n ? "ink-in" : ""}>
+        {inr(hist.cur)}
+      </span>
+    </span>
+  );
 }

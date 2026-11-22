@@ -19,12 +19,13 @@ export function paymentTerms(total: number, free: boolean) {
   return `Full amount of ${rs(total)}${free ? "" : " plus delivery charges"} to be paid on delivery.`;
 }
 
-export function orderMessage(o: { store: Store; customer: Customer; items: Line[]; total: number; free: boolean }) {
-  const { store, customer: c, items, total, free } = o;
+export function orderMessage(o: { store: Store; customer: Customer; items: Line[]; total: number; free: boolean; regular?: string | null }) {
+  const { store, customer: c, items, total, free, regular } = o;
   const lines = items.map((it, i) => `${i + 1}. ${it.sku.name} (${it.sku.pack}) × ${it.qty} = ${rs(it.total)}`);
   return [
     `*New order: Karnavati Dairy*`,
     `Shop: ${store.name}, ${store.city}`,
+    ...(regular ? [`Regular order (bandhi): ${regular}`] : []),
     ``,
     `*Customer*`,
     `Name: ${c.name.trim()}`,

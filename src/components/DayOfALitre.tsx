@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import T from "@/components/T";
 
 const steps = [
-  { t: "04:00", h: 4, m: 0, title: "Milked", text: "Contactless machines at clean, calm farms. No hands, no contamination." },
-  { t: "04:20", h: 4, m: 20, title: "Chilled", text: "Straight below 4°C, to lock the freshness in before the sun is up." },
-  { t: "05:30", h: 5, m: 30, title: "Pasteurised & tested", text: "Precise heat, then fat, SNF and purity checked at every batch." },
-  { t: "06:15", h: 6, m: 15, title: "Sealed", text: "Food-grade pouches, sealed and dated, into the cold chain." },
-  { t: "07:00", h: 7, m: 0, title: "At your shop", text: "On the counter of 50+ Karnavati shops before your first chai." },
+  { t: "04:00", h: 4, m: 0, title: "Milked", titleGu: "દોહન", text: "Contactless machines at clean, calm farms. No hands, no contamination.", textGu: "સ્વચ્છ, શાંત ખેતરોમાં સંપર્ક વિનાના મશીન. હાથ નહીં, ભેળસેળ નહીં." },
+  { t: "04:20", h: 4, m: 20, title: "Chilled", titleGu: "ઠંડું", text: "Straight below 4°C, to lock the freshness in before the sun is up.", textGu: "સૂરજ ઊગે એ પહેલાં તાજગી જાળવવા સીધું 4°C થી નીચે." },
+  { t: "05:30", h: 5, m: 30, title: "Pasteurised & tested", titleGu: "પાશ્ચરાઇઝ્ડ અને ચકાસણી", text: "Precise heat, then fat, SNF and purity checked at every batch.", textGu: "ચોક્કસ ગરમી, પછી દરેક બેચમાં ફેટ, SNF અને શુદ્ધતાની તપાસ." },
+  { t: "06:15", h: 6, m: 15, title: "Sealed", titleGu: "સીલબંધ", text: "Food-grade pouches, sealed and dated, into the cold chain.", textGu: "ફૂડ-ગ્રેડ પાઉચ, સીલ અને તારીખ સાથે, કોલ્ડ-ચેનમાં." },
+  { t: "07:00", h: 7, m: 0, title: "At your shop", titleGu: "તમારી દુકાને", text: "On the counter of 50+ Karnavati shops before your first chai.", textGu: "તમારી પહેલી ચા પહેલાં 50+ કર્ણાવતી દુકાનોના કાઉન્ટર પર." },
 ];
 
 /** A sticky clock whose hands move as you scroll through the morning. */
@@ -34,13 +35,14 @@ export default function DayOfALitre() {
 
   return (
     <section className="mx-auto mt-24 max-w-6xl px-4 sm:px-6" aria-labelledby="litre-title">
-      <p className="font-mono text-xs uppercase tracking-[0.2em] text-chopda">Ek litre no divas · a litre’s morning</p>
+      <p className="font-mono text-xs uppercase tracking-[0.2em] text-chopda">
+        <T en="Ek litre no divas · a litre’s morning" gu="એક લિટરની સવાર" />
+      </p>
       <h2 id="litre-title" className="mt-2 max-w-2xl font-display text-4xl leading-[1.05] sm:text-6xl">
-        Three hours from the farm to your chai.
+        <T en="Three hours from the farm to your chai." gu="ખેતરથી તમારી ચા સુધી ત્રણ કલાક." />
       </h2>
 
       <div className="mt-10 grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] md:gap-16">
-        {/* sticky clock */}
         <div className="sticky top-2 z-10 -mx-4 bg-paper/90 px-4 py-3 backdrop-blur md:top-24 md:mx-0 md:self-start md:bg-transparent md:p-0 md:backdrop-blur-none">
           <div className="flex items-center gap-5 md:block">
             <svg viewBox="0 0 200 200" className="size-24 shrink-0 md:size-80" aria-hidden>
@@ -61,7 +63,9 @@ export default function DayOfALitre() {
             </svg>
             <div className="md:mt-6">
               <p key={s.t} className="ink-in font-mono text-3xl font-semibold text-chopda md:text-5xl">{s.t}</p>
-              <p className="font-display text-xl md:text-2xl">{s.title}</p>
+              <p className="font-display text-xl md:text-2xl">
+                <T en={s.title} gu={s.titleGu} />
+              </p>
             </div>
           </div>
         </div>
@@ -77,8 +81,12 @@ export default function DayOfALitre() {
               className={`ledger rounded-2xl border border-ink/10 p-6 pl-16 shadow-[4px_4px_0_rgb(28_34_54/0.08)] transition-opacity duration-500 md:pl-28 ${k === i ? "opacity-100" : "opacity-45"}`}
             >
               <p className="font-mono text-sm text-chopda">{st.t} a.m.</p>
-              <h3 className="mt-1 font-display text-3xl">{st.title}</h3>
-              <p className="mt-2 text-lg leading-[2.75rem] text-ink-2">{st.text}</p>
+              <h3 className="mt-1 font-display text-3xl">
+                <T en={st.title} gu={st.titleGu} />
+              </h3>
+              <p className="mt-2 text-lg leading-[2.75rem] text-ink-2">
+                <T en={st.text} gu={st.textGu} />
+              </p>
             </li>
           ))}
         </ol>

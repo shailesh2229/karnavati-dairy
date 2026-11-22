@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { inr, summarise, useLines } from "@/lib/cart";
+import T from "@/components/T";
 
 const tabs = [
-  { href: "/", en: "Home", gu: "શરૂઆત", tint: "bg-[#efe3c3]" },
-  { href: "/products", en: "Counter", gu: "દુકાન", tint: "bg-[#f3d9a4]" },
-  { href: "/hisaab", en: "Hisaab", gu: "હિસાબ", tint: "bg-[#f1c7b8]" },
-  { href: "/stores", en: "Shops", gu: "શાખા", tint: "bg-[#cfdcc0]" },
-  { href: "/story", en: "Story", gu: "વાર્તા", tint: "bg-[#c9d9ea]" },
+  { href: "/", en: "Home", gu: "શરૂઆત", guShort: "મુખ્ય", tint: "bg-[#efe3c3]" },
+  { href: "/products", en: "Counter", gu: "દુકાન", guShort: "ખરીદી", tint: "bg-[#f3d9a4]" },
+  { href: "/hisaab", en: "Hisaab", gu: "હિસાબ", guShort: "બિલ", tint: "bg-[#f1c7b8]" },
+  { href: "/stores", en: "Shops", gu: "શાખા", guShort: "સરનામાં", tint: "bg-[#cfdcc0]" },
+  { href: "/story", en: "Story", gu: "વાર્તા", guShort: "અમે", tint: "bg-[#c9d9ea]" },
 ];
 
 /**
@@ -20,24 +21,28 @@ export default function ThumbIndex() {
   const pathname = usePathname();
   const s = summarise(useLines());
   const active = (h: string) => (h === "/" ? pathname === "/" : pathname.startsWith(h));
+  const here = tabs.findIndex((t) => active(t.href));
+  // turning to a later tab lifts the page forward; an earlier tab swings back
+  const turn = (i: number) => [i >= here ? "turn-fwd" : "turn-back"];
 
   return (
     <>
       {/* Desktop: right edge */}
       <nav aria-label="Ledger index" className="fixed right-0 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-1.5 md:flex">
-        {tabs.map((t) => {
+        {tabs.map((t, i) => {
           const on = active(t.href);
           return (
             <Link
               key={t.href}
               href={t.href}
+              transitionTypes={turn(i)}
               aria-current={on ? "page" : undefined}
               className={`group relative flex w-[5.5rem] flex-col items-start rounded-l-xl border border-r-0 border-ink/15 px-3 py-2.5 shadow-[-3px_3px_0_rgb(28_34_54/0.12)] transition-transform duration-300 ${t.tint} ${
                 on ? "-translate-x-3" : "hover:-translate-x-1.5"
               }`}
             >
               <span className="font-gu text-[15px] leading-none text-chopda">{t.gu}</span>
-              <span className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink">{t.en}</span>
+              <span className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink l-en">{t.en}</span>
               {t.href === "/hisaab" && s.count > 0 && (
                 <span key={s.total} className="animate-pop mt-1 font-mono text-[11px] font-semibold text-chopda">
                   {inr(s.total)}
@@ -60,12 +65,13 @@ export default function ThumbIndex() {
           </div>
         )}
         <ul className="grid grid-cols-5 gap-1 px-1.5 pt-1.5">
-          {tabs.map((t) => {
+          {tabs.map((t, i) => {
             const on = active(t.href);
             return (
               <li key={t.href}>
                 <Link
                   href={t.href}
+                  transitionTypes={turn(i)}
                   aria-current={on ? "page" : undefined}
                   className={`relative flex h-[62px] flex-col items-center justify-center rounded-t-xl border border-b-0 border-ink/15 transition-transform duration-300 ${t.tint} ${
                     on ? "-translate-y-1.5 shadow-[0_-3px_0_rgb(158_27_23/0.9)]" : ""
@@ -73,7 +79,7 @@ export default function ThumbIndex() {
                 >
                   <span className="font-gu text-[15px] leading-none text-chopda">{t.gu}</span>
                   <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink">
-                    {t.href === "/hisaab" && s.count > 0 ? inr(s.total) : t.en}
+                    {t.href === "/hisaab" && s.count > 0 ? inr(s.total) : <T en={t.en} gu={t.guShort} />}
                   </span>
                   {t.href === "/hisaab" && s.count > 0 && (
                     <span key={s.count} className="animate-pop absolute -top-1.5 right-1.5 grid min-w-5 place-items-center rounded-full bg-chopda px-1 font-mono text-[10px] font-semibold text-milk">

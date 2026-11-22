@@ -3,6 +3,7 @@
 import { useState } from "react";
 import StorePicker, { type Picked } from "@/components/StorePicker";
 import Directions from "@/components/Directions";
+import T from "@/components/T";
 
 export default function ShopFinder() {
   const [picked, setPicked] = useState<Picked | null>(null);
@@ -25,10 +26,14 @@ export default function ShopFinder() {
             <Directions store={picked.store} km={picked.km} />
           ) : (
             <div className="ledger rounded-2xl border-2 border-dashed border-ink/40 p-6 pl-14 md:pl-28">
-              <p className="font-hand text-3xl text-chopda">pick a shop →</p>
+              <p className="font-hand text-3xl text-chopda">
+                <T en="pick a shop →" gu={<span className="text-xl">દુકાન પસંદ કરો →</span>} />
+              </p>
               <p className="mt-2 leading-[2.75rem] text-ink-2">
-                Use your location or search your area. Then open Google Maps, book a ride straight to the shop, or copy the
-                address.
+                <T
+                  en="Use your location or search your area. Then open Google Maps, book a ride straight to the shop, or copy the address."
+                  gu="તમારું સ્થાન વાપરો કે વિસ્તાર શોધો. પછી Google Maps ખોલો, સીધી દુકાન સુધી રાઇડ બુક કરો, કે સરનામું કૉપિ કરો."
+                />
               </p>
             </div>
           )}

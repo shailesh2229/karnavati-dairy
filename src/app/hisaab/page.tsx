@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Hisaab from "@/components/Hisaab";
+import PageTurn from "@/components/PageTurn";
 
 export const metadata: Metadata = {
   title: "Your Hisaab",
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function HisaabPage() {
-  return <Hisaab />;
+  return (
+    <PageTurn>
+      <Hisaab />
+    </PageTurn>
+  );
 }
